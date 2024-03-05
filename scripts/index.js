@@ -34,9 +34,63 @@ const baseDeDatos = {
 
 // 1) Escuchar el evento necesario para reaccionar cuando la persona
 // haga click en el botón iniciar sesión.
+const loginBtn = document.querySelector('.login-btn');
+
+loginBtn.addEventListener('click', function () {
+  iniciarSesion();
+});
 
 // 2) El proceso de inicio de sesión deberá tener una demora de 3 segundos.
 // Deberás agregar la función correspondiente para simular dicha demora.
+function iniciarSesion() {
+  const loader = document.getElementById('loader');
+  const errorContainer = document.getElementById('error-container');
+
+  loader.classList.remove('hidden');
+  errorContainer.classList.add('hidden');
+
+  function validarFormatoEmail(email) {
+    // Expresión regular para validar el formato del correo electrónico
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regexEmail.test(email);
+  }
+
+  //Simular los 3 segundos
+  setTimeout(function () {
+    let campoEmail = document.getElementById('email-input');
+    let campoPassword = document.getElementById('password-input');
+    let form = document.querySelector('form');
+    let title = document.querySelector('h1');
+
+    let email = campoEmail.value.trim();
+    let password = campoPassword.value.trim();
+
+    let emailValido = validarFormatoEmail(email);
+    let passwordValida = password.length >= 5;
+    let usuarioExistente = false;
+
+    baseDeDatos.usuarios.forEach(usuario => {
+      if (usuario.email === email && usuario.password === password) {
+        usuarioExistente = true;
+      }
+    })
+
+    if (emailValido && passwordValida && usuarioExistente) {
+      loader.classList.add('hidden');
+      form.classList.add('hidden');
+      title.innerText = 'Bienvenido al sitio 😀';
+    } else {
+      loader.classList.add('hidden');
+      errorContainer.classList.remove('hidden');
+      errorContainer.textContent = "Alguno de los datos ingresados son incorrectos.";
+      campoEmail.value = '';
+      campoPassword.value = '';
+    }
+
+
+    
+  }, 3000)
+}
 
 // 3) Durante el tiempo indicado anteriormente, se deberá mostrar el mensaje "Iniciando sesión..."
 
